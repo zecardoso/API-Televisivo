@@ -1,12 +1,12 @@
-package com.televisivo.rest;
+package com.televisivo.web.rest;
 
 import java.util.List;
 
 import javax.validation.Valid;
 
-import com.televisivo.model.Categoria;
-import com.televisivo.service.CategoriaService;
-import com.televisivo.service.exceptions.CategoriaNaoCadastradaException;
+import com.televisivo.model.Elenco;
+import com.televisivo.service.ElencoService;
+import com.televisivo.service.exceptions.ElencoNaoCadastradoException;
 import com.televisivo.service.exceptions.NegocioException;
 
 import org.springframework.beans.BeanUtils;
@@ -24,49 +24,49 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/categoria")
-public class CategoriaRestController {
+@RequestMapping(value = "/api/elenco")
+public class ElencoRestController {
 
     @Autowired
-    private CategoriaService categoriaService;
+    private ElencoService elencoService;
 
     @GetMapping(value = "/listar")
-    public List<Categoria> listar() {
-        return categoriaService.findAll();
+    public List<Elenco> listar() {
+        return elencoService.findAll();
     }
 
     @PostMapping(value = "/adicionar")
     @ResponseStatus(HttpStatus.OK)
-    public Categoria registrar(@RequestBody @Valid Categoria categoria) {
-        return categoriaService.save(categoria);
+    public Elenco registrar(@RequestBody @Valid Elenco elenco) {
+        return elencoService.save(elenco);
     }
 
     @PutMapping("/alterar/{id}")
-    public ResponseEntity<Categoria> alterar(@PathVariable Long id, @RequestBody Categoria categoria) {
+    public ResponseEntity<Elenco> alterar(@PathVariable Long id, @RequestBody Elenco elenco) {
         try {
-            Categoria categoria2 = categoriaService.findById(id);
-            if (categoria2 != null) {
-                BeanUtils.copyProperties(categoria, categoria2);
-                categoria2 = categoriaService.update(categoria2);
-                return ResponseEntity.ok(categoria2);
+            Elenco elenco2 = elencoService.findById(id);
+            if (elenco2 != null) {
+                BeanUtils.copyProperties(elenco, elenco2);
+                elenco2 = elencoService.update(elenco2);
+                return ResponseEntity.ok(elenco2);
             }
-        } catch (CategoriaNaoCadastradaException e) {
-            throw new NegocioException("O categoria não existe no sistema");
+        } catch (ElencoNaoCadastradoException e) {
+            throw new NegocioException("O elenco não existe no sistema");
         }
         return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/remover/{id}")
     public ResponseEntity<?> remover(@PathVariable Long id) {
-        categoriaService.deleteById(id);
+        elencoService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
     
     @GetMapping(value = "/buscar/{id}")
-    public ResponseEntity<Categoria> buscar(@PathVariable Long id) {
-        Categoria categoria = categoriaService.findById(id);
-        if (categoria != null) {
-            return ResponseEntity.ok(categoria);
+    public ResponseEntity<Elenco> buscar(@PathVariable Long id) {
+        Elenco elenco = elencoService.findById(id);
+        if (elenco != null) {
+            return ResponseEntity.ok(elenco);
         }
         return ResponseEntity.notFound().build();
     }

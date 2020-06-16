@@ -1,13 +1,13 @@
-package com.televisivo.rest;
+package com.televisivo.web.rest;
 
 import java.util.List;
 
 import javax.validation.Valid;
 
-import com.televisivo.model.Role;
-import com.televisivo.service.RoleService;
+import com.televisivo.model.Episodio;
+import com.televisivo.service.EpisodioService;
+import com.televisivo.service.exceptions.EpisodioNaoCadastradoException;
 import com.televisivo.service.exceptions.NegocioException;
-import com.televisivo.service.exceptions.RoleNaoCadastradaException;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,49 +24,49 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/role")
-public class RoleRestController {
+@RequestMapping(value = "/api/episodio")
+public class EpisodioRestController {
 
     @Autowired
-    private RoleService roleService;
+    private EpisodioService episodioService;
 
     @GetMapping(value = "/listar")
-    public List<Role> listar() {
-        return roleService.findAll();
+    public List<Episodio> listar() {
+        return episodioService.findAll();
     }
 
     @PostMapping(value = "/adicionar")
     @ResponseStatus(HttpStatus.OK)
-    public Role registrar(@RequestBody @Valid Role role) {
-        return roleService.save(role);
+    public Episodio registrar(@RequestBody @Valid Episodio episodio) {
+        return episodioService.save(episodio);
     }
 
     @PutMapping("/alterar/{id}")
-    public ResponseEntity<Role> alterar(@PathVariable Long id, @RequestBody Role role) {
+    public ResponseEntity<Episodio> alterar(@PathVariable Long id, @RequestBody Episodio episodio) {
         try {
-            Role role2 = roleService.findById(id);
-            if (role2 != null) {
-                BeanUtils.copyProperties(role, role2);
-                role2 = roleService.update(role2);
-                return ResponseEntity.ok(role2);
+            Episodio episodio2 = episodioService.findById(id);
+            if (episodio2 != null) {
+                BeanUtils.copyProperties(episodio, episodio2);
+                episodio2 = episodioService.update(episodio2);
+                return ResponseEntity.ok(episodio2);
             }
-        } catch (RoleNaoCadastradaException e) {
-            throw new NegocioException("O role não existe no sistema");
+        } catch (EpisodioNaoCadastradoException e) {
+            throw new NegocioException("O episodio não existe no sistema");
         }
         return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/remover/{id}")
     public ResponseEntity<?> remover(@PathVariable Long id) {
-        roleService.deleteById(id);
+        episodioService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
     
     @GetMapping(value = "/buscar/{id}")
-    public ResponseEntity<Role> buscar(@PathVariable Long id) {
-        Role role = roleService.findById(id);
-        if (role != null) {
-            return ResponseEntity.ok(role);
+    public ResponseEntity<Episodio> buscar(@PathVariable Long id) {
+        Episodio episodio = episodioService.findById(id);
+        if (episodio != null) {
+            return ResponseEntity.ok(episodio);
         }
         return ResponseEntity.notFound().build();
     }

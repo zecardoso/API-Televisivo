@@ -1,4 +1,4 @@
-package com.televisivo.rest.exception;
+package com.televisivo.web.rest.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

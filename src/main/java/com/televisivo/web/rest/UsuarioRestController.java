@@ -1,13 +1,13 @@
-package com.televisivo.rest;
+package com.televisivo.web.rest;
 
 import java.util.List;
 
 import javax.validation.Valid;
 
-import com.televisivo.model.Servico;
-import com.televisivo.service.ServicoService;
+import com.televisivo.model.Usuario;
+import com.televisivo.service.UsuarioService;
 import com.televisivo.service.exceptions.NegocioException;
-import com.televisivo.service.exceptions.ServicoNaoCadastradoException;
+import com.televisivo.service.exceptions.UsuarioNaoCadastradoException;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,49 +24,49 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/servico")
-public class ServicoRestController {
+@RequestMapping(value = "/api/usuario")
+public class UsuarioRestController {
 
     @Autowired
-    private ServicoService servicoService;
+    private UsuarioService usuarioService;
 
     @GetMapping(value = "/listar")
-    public List<Servico> listar() {
-        return servicoService.findAll();
+    public List<Usuario> listar() {
+        return usuarioService.findAll();
     }
 
     @PostMapping(value = "/adicionar")
     @ResponseStatus(HttpStatus.OK)
-    public Servico registrar(@RequestBody @Valid Servico servico) {
-        return servicoService.save(servico);
+    public Usuario registrar(@RequestBody @Valid Usuario usuario) {
+        return usuarioService.save(usuario);
     }
 
     @PutMapping("/alterar/{id}")
-    public ResponseEntity<Servico> alterar(@PathVariable Long id, @RequestBody Servico servico) {
+    public ResponseEntity<Usuario> alterar(@PathVariable Long id, @RequestBody Usuario usuario) {
         try {
-            Servico servico2 = servicoService.findById(id);
-            if (servico2 != null) {
-                BeanUtils.copyProperties(servico, servico2);
-                servico2 = servicoService.update(servico2);
-                return ResponseEntity.ok(servico2);
+            Usuario usuario2 = usuarioService.findById(id);
+            if (usuario2 != null) {
+                BeanUtils.copyProperties(usuario, usuario2);
+                usuario2 = usuarioService.update(usuario2);
+                return ResponseEntity.ok(usuario2);
             }
-        } catch (ServicoNaoCadastradoException e) {
-            throw new NegocioException("O servico não existe no sistema");
+        } catch (UsuarioNaoCadastradoException e) {
+            throw new NegocioException("O usuario não existe no sistema");
         }
         return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/remover/{id}")
     public ResponseEntity<?> remover(@PathVariable Long id) {
-        servicoService.deleteById(id);
+        usuarioService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
     
     @GetMapping(value = "/buscar/{id}")
-    public ResponseEntity<Servico> buscar(@PathVariable Long id) {
-        Servico servico = servicoService.findById(id);
-        if (servico != null) {
-            return ResponseEntity.ok(servico);
+    public ResponseEntity<Usuario> buscar(@PathVariable Long id) {
+        Usuario usuario = usuarioService.findById(id);
+        if (usuario != null) {
+            return ResponseEntity.ok(usuario);
         }
         return ResponseEntity.notFound().build();
     }

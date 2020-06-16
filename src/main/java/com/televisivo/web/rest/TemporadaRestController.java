@@ -1,13 +1,13 @@
-package com.televisivo.rest;
+package com.televisivo.web.rest;
 
 import java.util.List;
 
 import javax.validation.Valid;
 
-import com.televisivo.model.Permissao;
-import com.televisivo.service.PermissaoService;
+import com.televisivo.model.Temporada;
+import com.televisivo.service.TemporadaService;
 import com.televisivo.service.exceptions.NegocioException;
-import com.televisivo.service.exceptions.PermissaoNaoCadastradaException;
+import com.televisivo.service.exceptions.TemporadaNaoCadastradaException;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,49 +24,49 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/permissao")
-public class PermissaoRestController {
+@RequestMapping(value = "/api/temporada")
+public class TemporadaRestController {
 
     @Autowired
-    private PermissaoService permissaoService;
+    private TemporadaService temporadaService;
 
     @GetMapping(value = "/listar")
-    public List<Permissao> listar() {
-        return permissaoService.findAll();
+    public List<Temporada> listar() {
+        return temporadaService.findAll();
     }
 
     @PostMapping(value = "/adicionar")
     @ResponseStatus(HttpStatus.OK)
-    public Permissao registrar(@RequestBody @Valid Permissao permissao) {
-        return permissaoService.save(permissao);
+    public Temporada registrar(@RequestBody @Valid Temporada temporada) {
+        return temporadaService.save(temporada);
     }
 
     @PutMapping("/alterar/{id}")
-    public ResponseEntity<Permissao> alterar(@PathVariable Long id, @RequestBody Permissao permissao) {
+    public ResponseEntity<Temporada> alterar(@PathVariable Long id, @RequestBody Temporada temporada) {
         try {
-            Permissao permissao2 = permissaoService.findById(id);
-            if (permissao2 != null) {
-                BeanUtils.copyProperties(permissao, permissao2);
-                permissao2 = permissaoService.update(permissao2);
-                return ResponseEntity.ok(permissao2);
+            Temporada temporada2 = temporadaService.findById(id);
+            if (temporada2 != null) {
+                BeanUtils.copyProperties(temporada, temporada2);
+                temporada2 = temporadaService.update(temporada2);
+                return ResponseEntity.ok(temporada2);
             }
-        } catch (PermissaoNaoCadastradaException e) {
-            throw new NegocioException("O permissao não existe no sistema");
+        } catch (TemporadaNaoCadastradaException e) {
+            throw new NegocioException("O temporada não existe no sistema");
         }
         return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/remover/{id}")
     public ResponseEntity<?> remover(@PathVariable Long id) {
-        permissaoService.deleteById(id);
+        temporadaService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
     
     @GetMapping(value = "/buscar/{id}")
-    public ResponseEntity<Permissao> buscar(@PathVariable Long id) {
-        Permissao permissao = permissaoService.findById(id);
-        if (permissao != null) {
-            return ResponseEntity.ok(permissao);
+    public ResponseEntity<Temporada> buscar(@PathVariable Long id) {
+        Temporada temporada = temporadaService.findById(id);
+        if (temporada != null) {
+            return ResponseEntity.ok(temporada);
         }
         return ResponseEntity.notFound().build();
     }

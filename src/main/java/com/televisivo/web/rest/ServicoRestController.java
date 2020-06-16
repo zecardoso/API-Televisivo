@@ -1,13 +1,13 @@
-package com.televisivo.rest;
+package com.televisivo.web.rest;
 
 import java.util.List;
 
 import javax.validation.Valid;
 
-import com.televisivo.model.Escopo;
-import com.televisivo.service.EscopoService;
-import com.televisivo.service.exceptions.EscopoNaoCadastradoException;
+import com.televisivo.model.Servico;
+import com.televisivo.service.ServicoService;
 import com.televisivo.service.exceptions.NegocioException;
+import com.televisivo.service.exceptions.ServicoNaoCadastradoException;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,49 +24,49 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/escopo")
-public class EscopoRestController {
+@RequestMapping(value = "/api/servico")
+public class ServicoRestController {
 
     @Autowired
-    private EscopoService escopoService;
+    private ServicoService servicoService;
 
     @GetMapping(value = "/listar")
-    public List<Escopo> listar() {
-        return escopoService.findAll();
+    public List<Servico> listar() {
+        return servicoService.findAll();
     }
 
     @PostMapping(value = "/adicionar")
     @ResponseStatus(HttpStatus.OK)
-    public Escopo registrar(@RequestBody @Valid Escopo escopo) {
-        return escopoService.save(escopo);
+    public Servico registrar(@RequestBody @Valid Servico servico) {
+        return servicoService.save(servico);
     }
 
     @PutMapping("/alterar/{id}")
-    public ResponseEntity<Escopo> alterar(@PathVariable Long id, @RequestBody Escopo escopo) {
+    public ResponseEntity<Servico> alterar(@PathVariable Long id, @RequestBody Servico servico) {
         try {
-            Escopo escopo2 = escopoService.findById(id);
-            if (escopo2 != null) {
-                BeanUtils.copyProperties(escopo, escopo2);
-                escopo2 = escopoService.update(escopo2);
-                return ResponseEntity.ok(escopo2);
+            Servico servico2 = servicoService.findById(id);
+            if (servico2 != null) {
+                BeanUtils.copyProperties(servico, servico2);
+                servico2 = servicoService.update(servico2);
+                return ResponseEntity.ok(servico2);
             }
-        } catch (EscopoNaoCadastradoException e) {
-            throw new NegocioException("O escopo não existe no sistema");
+        } catch (ServicoNaoCadastradoException e) {
+            throw new NegocioException("O servico não existe no sistema");
         }
         return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/remover/{id}")
     public ResponseEntity<?> remover(@PathVariable Long id) {
-        escopoService.deleteById(id);
+        servicoService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
     
     @GetMapping(value = "/buscar/{id}")
-    public ResponseEntity<Escopo> buscar(@PathVariable Long id) {
-        Escopo escopo = escopoService.findById(id);
-        if (escopo != null) {
-            return ResponseEntity.ok(escopo);
+    public ResponseEntity<Servico> buscar(@PathVariable Long id) {
+        Servico servico = servicoService.findById(id);
+        if (servico != null) {
+            return ResponseEntity.ok(servico);
         }
         return ResponseEntity.notFound().build();
     }

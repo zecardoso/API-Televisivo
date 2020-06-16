@@ -1,12 +1,12 @@
-package com.televisivo.rest;
+package com.televisivo.web.rest;
 
 import java.util.List;
 
 import javax.validation.Valid;
 
-import com.televisivo.model.Elenco;
-import com.televisivo.service.ElencoService;
-import com.televisivo.service.exceptions.ElencoNaoCadastradoException;
+import com.televisivo.model.Artista;
+import com.televisivo.service.ArtistaService;
+import com.televisivo.service.exceptions.ArtistaNaoCadastradoException;
 import com.televisivo.service.exceptions.NegocioException;
 
 import org.springframework.beans.BeanUtils;
@@ -24,49 +24,49 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/elenco")
-public class ElencoRestController {
+@RequestMapping(value = "/api/artista")
+public class ArtistaRestController {
 
     @Autowired
-    private ElencoService elencoService;
+    private ArtistaService artistaService;
 
     @GetMapping(value = "/listar")
-    public List<Elenco> listar() {
-        return elencoService.findAll();
+    public List<Artista> listar() {
+        return artistaService.findAll();
     }
 
     @PostMapping(value = "/adicionar")
     @ResponseStatus(HttpStatus.OK)
-    public Elenco registrar(@RequestBody @Valid Elenco elenco) {
-        return elencoService.save(elenco);
+    public Artista registrar(@RequestBody @Valid Artista artista) {
+        return artistaService.save(artista);
     }
 
     @PutMapping("/alterar/{id}")
-    public ResponseEntity<Elenco> alterar(@PathVariable Long id, @RequestBody Elenco elenco) {
+    public ResponseEntity<Artista> alterar(@PathVariable Long id, @RequestBody Artista artista) {
         try {
-            Elenco elenco2 = elencoService.findById(id);
-            if (elenco2 != null) {
-                BeanUtils.copyProperties(elenco, elenco2);
-                elenco2 = elencoService.update(elenco2);
-                return ResponseEntity.ok(elenco2);
+            Artista artista2 = artistaService.findById(id);
+            if (artista2 != null) {
+                BeanUtils.copyProperties(artista, artista2);
+                artista2 = artistaService.update(artista2);
+                return ResponseEntity.ok(artista2);
             }
-        } catch (ElencoNaoCadastradoException e) {
-            throw new NegocioException("O elenco não existe no sistema");
+        } catch (ArtistaNaoCadastradoException e) {
+            throw new NegocioException("O artista não existe no sistema");
         }
         return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/remover/{id}")
     public ResponseEntity<?> remover(@PathVariable Long id) {
-        elencoService.deleteById(id);
+        artistaService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
     
     @GetMapping(value = "/buscar/{id}")
-    public ResponseEntity<Elenco> buscar(@PathVariable Long id) {
-        Elenco elenco = elencoService.findById(id);
-        if (elenco != null) {
-            return ResponseEntity.ok(elenco);
+    public ResponseEntity<Artista> buscar(@PathVariable Long id) {
+        Artista artista = artistaService.findById(id);
+        if (artista != null) {
+            return ResponseEntity.ok(artista);
         }
         return ResponseEntity.notFound().build();
     }

@@ -1,4 +1,4 @@
-package com.televisivo.rest.response;
+package com.televisivo.web.rest.response;
 
 import java.util.HashMap;
 import java.util.Map;

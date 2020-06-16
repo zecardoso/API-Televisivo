@@ -1,13 +1,13 @@
-package com.televisivo.rest;
+package com.televisivo.web.rest;
 
 import java.util.List;
 
 import javax.validation.Valid;
 
-import com.televisivo.model.Temporada;
-import com.televisivo.service.TemporadaService;
+import com.televisivo.model.Role;
+import com.televisivo.service.RoleService;
 import com.televisivo.service.exceptions.NegocioException;
-import com.televisivo.service.exceptions.TemporadaNaoCadastradaException;
+import com.televisivo.service.exceptions.RoleNaoCadastradaException;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,49 +24,49 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/temporada")
-public class TemporadaRestController {
+@RequestMapping(value = "/api/role")
+public class RoleRestController {
 
     @Autowired
-    private TemporadaService temporadaService;
+    private RoleService roleService;
 
     @GetMapping(value = "/listar")
-    public List<Temporada> listar() {
-        return temporadaService.findAll();
+    public List<Role> listar() {
+        return roleService.findAll();
     }
 
     @PostMapping(value = "/adicionar")
     @ResponseStatus(HttpStatus.OK)
-    public Temporada registrar(@RequestBody @Valid Temporada temporada) {
-        return temporadaService.save(temporada);
+    public Role registrar(@RequestBody @Valid Role role) {
+        return roleService.save(role);
     }
 
     @PutMapping("/alterar/{id}")
-    public ResponseEntity<Temporada> alterar(@PathVariable Long id, @RequestBody Temporada temporada) {
+    public ResponseEntity<Role> alterar(@PathVariable Long id, @RequestBody Role role) {
         try {
-            Temporada temporada2 = temporadaService.findById(id);
-            if (temporada2 != null) {
-                BeanUtils.copyProperties(temporada, temporada2);
-                temporada2 = temporadaService.update(temporada2);
-                return ResponseEntity.ok(temporada2);
+            Role role2 = roleService.findById(id);
+            if (role2 != null) {
+                BeanUtils.copyProperties(role, role2);
+                role2 = roleService.update(role2);
+                return ResponseEntity.ok(role2);
             }
-        } catch (TemporadaNaoCadastradaException e) {
-            throw new NegocioException("O temporada não existe no sistema");
+        } catch (RoleNaoCadastradaException e) {
+            throw new NegocioException("O role não existe no sistema");
         }
         return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/remover/{id}")
     public ResponseEntity<?> remover(@PathVariable Long id) {
-        temporadaService.deleteById(id);
+        roleService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
     
     @GetMapping(value = "/buscar/{id}")
-    public ResponseEntity<Temporada> buscar(@PathVariable Long id) {
-        Temporada temporada = temporadaService.findById(id);
-        if (temporada != null) {
-            return ResponseEntity.ok(temporada);
+    public ResponseEntity<Role> buscar(@PathVariable Long id) {
+        Role role = roleService.findById(id);
+        if (role != null) {
+            return ResponseEntity.ok(role);
         }
         return ResponseEntity.notFound().build();
     }

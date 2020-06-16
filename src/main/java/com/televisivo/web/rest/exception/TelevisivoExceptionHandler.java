@@ -1,4 +1,4 @@
-package com.televisivo.rest.exception;
+package com.televisivo.web.rest.exception;
 
 import java.time.LocalDateTime;
 import java.util.List;
