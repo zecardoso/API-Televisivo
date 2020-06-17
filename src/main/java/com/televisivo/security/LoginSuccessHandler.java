@@ -24,8 +24,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Autowired
     private UsuarioService usuarioService;
 
-    @Autowired
-    private PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices;
+    // @Autowired
+    // private PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices;
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
@@ -33,9 +33,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         request.getSession().setMaxInactiveInterval(60 * 60);
         UsuarioSistema usuarioLogado = (UsuarioSistema) authentication.getPrincipal();
-        if (Objects.isNull(usuarioLogado)) {
-            persistentTokenBasedRememberMeServices.loginSuccess(request, response, authentication);
-        }
+        // if (Objects.isNull(usuarioLogado)) {
+        //     persistentTokenBasedRememberMeServices.loginSuccess(request, response, authentication);
+        // }
         updateLoginUsuario(usuarioLogado.getUsuario());
         redirectStrategy.sendRedirect(request, response, "/home");
     }

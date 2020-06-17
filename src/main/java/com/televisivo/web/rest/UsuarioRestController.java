@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.televisivo.model.Usuario;
+import com.televisivo.model.dto.converter.ConverterUsuario;
+import com.televisivo.model.dto.out.UsuarioOut;
 import com.televisivo.service.UsuarioService;
 import com.televisivo.service.exceptions.NegocioException;
 import com.televisivo.service.exceptions.UsuarioNaoCadastradoException;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,9 +33,13 @@ public class UsuarioRestController {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private ConverterUsuario converterUsuario;
+
+    @ResponseBody
     @GetMapping(value = "/listar")
-    public List<Usuario> listar() {
-        return usuarioService.findAll();
+    public List<UsuarioOut> listar() {
+        return converterUsuario.toCollectionsModel(usuarioService.findAll());
     }
 
     @PostMapping(value = "/adicionar")
