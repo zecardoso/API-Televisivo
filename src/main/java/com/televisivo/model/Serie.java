@@ -83,8 +83,4 @@ public class Serie implements Serializable {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "serie_elenco", joinColumns = @JoinColumn(name = "serie_id"), inverseJoinColumns = @JoinColumn(name = "elenco_id"))
     private List<Elenco> elencos = new ArrayList<>();
-
-    @JsonIgnore
-	@ManyToMany(mappedBy="series")
-    private List<Artista> artistas = new ArrayList<>();
 }
