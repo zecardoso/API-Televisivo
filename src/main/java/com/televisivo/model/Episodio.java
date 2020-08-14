@@ -23,8 +23,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
@@ -80,7 +78,6 @@ public class Episodio implements Serializable {
     @ManyToMany(mappedBy = "episodios")
     private List<Usuario> usuarios = new ArrayList<>();
 
-    @JsonIgnore
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "episodio_elenco", joinColumns = @JoinColumn(name = "episodio_id"), inverseJoinColumns = @JoinColumn(name = "elenco_id"))
     private List<Elenco> elencos = new ArrayList<>();

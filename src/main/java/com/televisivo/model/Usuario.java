@@ -22,7 +22,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.televisivo.config.TelevisivoConfig;
 import com.televisivo.model.enumerate.Genero;
 
@@ -105,23 +104,19 @@ public class Usuario implements UserDetails {
     @Column(nullable = true, columnDefinition = "DATE")
     private Date lastLogin;
 
-    @JsonIgnore
     @Size(min = 1, message = "Selecione pelo menos um grupo")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "usuario_role", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles;
 
-    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "usuario_categoria", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id"))
     private List<Categoria> categorias;
 
-    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "usuario_episodio", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "episodio_id"))
     private List<Episodio> episodios;
 
-    @JsonIgnore
     @Override
     @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {
