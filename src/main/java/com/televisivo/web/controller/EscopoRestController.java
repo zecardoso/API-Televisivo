@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.televisivo.model.Escopo;
+import com.televisivo.model.dto.converter.ConverterEscopo;
+import com.televisivo.model.dto.out.EscopoOut;
 import com.televisivo.service.EscopoService;
 import com.televisivo.service.exceptions.EscopoNaoCadastradoException;
 import com.televisivo.service.exceptions.NegocioException;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,9 +33,13 @@ public class EscopoRestController {
     @Autowired
     private EscopoService escopoService;
 
+    @Autowired
+    private ConverterEscopo converterEscopo;
+
+    @ResponseBody
     @GetMapping(value = "/listar")
-    public List<Escopo> listar() {
-        return escopoService.findAll();
+    public List<EscopoOut> listar() {
+        return converterEscopo.toCollectionsModel(escopoService.findAll());
     }
 
     @PostMapping(value = "/adicionar")

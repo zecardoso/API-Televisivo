@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.televisivo.model.Temporada;
+import com.televisivo.model.dto.converter.ConverterTemporada;
+import com.televisivo.model.dto.out.TemporadaOut;
 import com.televisivo.service.TemporadaService;
 import com.televisivo.service.exceptions.NegocioException;
 import com.televisivo.service.exceptions.TemporadaNaoCadastradaException;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,9 +33,13 @@ public class TemporadaRestController {
     @Autowired
     private TemporadaService temporadaService;
 
+    @Autowired
+    private ConverterTemporada converterTemporada;
+
+    @ResponseBody
     @GetMapping(value = "/listar")
-    public List<Temporada> listar() {
-        return temporadaService.findAll();
+    public List<TemporadaOut> listar() {
+        return converterTemporada.toCollectionsModel(temporadaService.findAll());
     }
 
     @PostMapping(value = "/adicionar")

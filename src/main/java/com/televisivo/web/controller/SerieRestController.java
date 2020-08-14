@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.televisivo.model.Serie;
+import com.televisivo.model.dto.converter.ConverterSerie;
+import com.televisivo.model.dto.out.SerieOut;
 import com.televisivo.service.SerieService;
 import com.televisivo.service.exceptions.NegocioException;
 import com.televisivo.service.exceptions.SerieNaoCadastradaException;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,9 +33,13 @@ public class SerieRestController {
     @Autowired
     private SerieService serieService;
 
+    @Autowired
+    private ConverterSerie converterSerie;
+
+    @ResponseBody
     @GetMapping(value = "/listar")
-    public List<Serie> listar() {
-        return serieService.findAll();
+    public List<SerieOut> listar() {
+        return converterSerie.toCollectionsModel(serieService.findAll());
     }
 
     @PostMapping(value = "/adicionar")

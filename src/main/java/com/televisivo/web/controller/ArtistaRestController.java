@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.televisivo.model.Artista;
+import com.televisivo.model.dto.converter.ConverterArtista;
+import com.televisivo.model.dto.out.ArtistaOut;
 import com.televisivo.service.ArtistaService;
 import com.televisivo.service.exceptions.ArtistaNaoCadastradoException;
 import com.televisivo.service.exceptions.NegocioException;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,9 +33,13 @@ public class ArtistaRestController {
     @Autowired
     private ArtistaService artistaService;
 
+    @Autowired
+    private ConverterArtista converterArtista;
+
+    @ResponseBody
     @GetMapping(value = "/listar")
-    public List<Artista> listar() {
-        return artistaService.findAll();
+    public List<ArtistaOut> listar() {
+        return converterArtista.toCollectionsModel(artistaService.findAll());
     }
 
     @PostMapping(value = "/adicionar")

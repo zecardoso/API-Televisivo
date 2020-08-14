@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.televisivo.model.Permissao;
+import com.televisivo.model.dto.converter.ConverterPermissao;
+import com.televisivo.model.dto.out.PermissaoOut;
 import com.televisivo.service.PermissaoService;
 import com.televisivo.service.exceptions.NegocioException;
 import com.televisivo.service.exceptions.PermissaoNaoCadastradaException;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,9 +33,13 @@ public class PermissaoRestController {
     @Autowired
     private PermissaoService permissaoService;
 
+    @Autowired
+    private ConverterPermissao converterPermissao;
+
+    @ResponseBody
     @GetMapping(value = "/listar")
-    public List<Permissao> listar() {
-        return permissaoService.findAll();
+    public List<PermissaoOut> listar() {
+        return converterPermissao.toCollectionsModel(permissaoService.findAll());
     }
 
     @PostMapping(value = "/adicionar")

@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.televisivo.model.Role;
+import com.televisivo.model.dto.converter.ConverterRole;
+import com.televisivo.model.dto.out.RoleOut;
 import com.televisivo.service.RoleService;
 import com.televisivo.service.exceptions.NegocioException;
 import com.televisivo.service.exceptions.RoleNaoCadastradaException;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,9 +33,13 @@ public class RoleRestController {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private ConverterRole converterRole;
+
+    @ResponseBody
     @GetMapping(value = "/listar")
-    public List<Role> listar() {
-        return roleService.findAll();
+    public List<RoleOut> listar() {
+        return converterRole.toCollectionsModel(roleService.findAll());
     }
 
     @PostMapping(value = "/adicionar")

@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.televisivo.model.Categoria;
+import com.televisivo.model.dto.converter.ConverterCategoria;
+import com.televisivo.model.dto.out.CategoriaOut;
 import com.televisivo.service.CategoriaService;
 import com.televisivo.service.exceptions.CategoriaNaoCadastradaException;
 import com.televisivo.service.exceptions.NegocioException;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,9 +33,13 @@ public class CategoriaRestController {
     @Autowired
     private CategoriaService categoriaService;
 
+    @Autowired
+    private ConverterCategoria converterCategoria;
+
+    @ResponseBody
     @GetMapping(value = "/listar")
-    public List<Categoria> listar() {
-        return categoriaService.findAll();
+    public List<CategoriaOut> listar() {
+        return converterCategoria.toCollectionsModel(categoriaService.findAll());
     }
 
     @PostMapping(value = "/adicionar")

@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.televisivo.model.Episodio;
+import com.televisivo.model.dto.converter.ConverterEpisodio;
+import com.televisivo.model.dto.out.EpisodioOut;
 import com.televisivo.service.EpisodioService;
 import com.televisivo.service.exceptions.EpisodioNaoCadastradoException;
 import com.televisivo.service.exceptions.NegocioException;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,9 +33,13 @@ public class EpisodioRestController {
     @Autowired
     private EpisodioService episodioService;
 
+    @Autowired
+    private ConverterEpisodio converterEpisodio;
+
+    @ResponseBody
     @GetMapping(value = "/listar")
-    public List<Episodio> listar() {
-        return episodioService.findAll();
+    public List<EpisodioOut> listar() {
+        return converterEpisodio.toCollectionsModel(episodioService.findAll());
     }
 
     @PostMapping(value = "/adicionar")
