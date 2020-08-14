@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import com.televisivo.model.Usuario;
 import com.televisivo.repository.UsuarioRepository;
-import com.televisivo.repository.filters.UsuarioFilter;
 import com.televisivo.service.UsuarioService;
 import com.televisivo.service.exceptions.EmailCadastradoException;
 import com.televisivo.service.exceptions.SenhaError;
@@ -14,8 +13,6 @@ import com.televisivo.service.exceptions.UsuarioNaoCadastradoException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,16 +80,6 @@ public class UsuarioServiceImpl implements UsuarioService {
         } catch (EmptyResultDataAccessException e) {
             throw new UsuarioNaoCadastradoException(String.format("O usuario com o código %d não foi encontrado!", id));
         }
-    }
-
-    @Override
-    public List<Usuario> buscarNome(String nome) {
-        return usuarioRepository.buscarNome(nome);
-    }
-
-    @Override
-    public Page<Usuario> listaComPaginacao(UsuarioFilter usuarioFilter, Pageable pageable) {
-        return usuarioRepository.listaComPaginacao(usuarioFilter, pageable);
     }
 
     @Override

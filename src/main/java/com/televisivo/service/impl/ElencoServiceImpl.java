@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.televisivo.model.Elenco;
 import com.televisivo.repository.ElencoRepository;
-import com.televisivo.repository.filters.ElencoFilter;
 import com.televisivo.service.ElencoService;
 import com.televisivo.service.exceptions.ElencoNaoCadastradoException;
 import com.televisivo.service.exceptions.EntidadeEmUsoException;
@@ -12,8 +11,6 @@ import com.televisivo.service.exceptions.EntidadeEmUsoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,15 +57,5 @@ public class ElencoServiceImpl implements ElencoService {
 		} catch (EmptyResultDataAccessException e){
 			throw new ElencoNaoCadastradoException(String.format("O elenco com o código %d não foi encontrado!", id));
 		}
-    }
-    
-	@Override
-	public List<Elenco> buscarPersonagem(String personagem) {
-		return elencoRepository.buscarPersonagem(personagem);
-	}
-
-    @Override
-    public Page<Elenco> listaComPaginacao(ElencoFilter elencoFilter, Pageable pageable) {
-        return elencoRepository.listaComPaginacao(elencoFilter, pageable);
     }
 }

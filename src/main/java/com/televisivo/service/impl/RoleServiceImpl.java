@@ -8,7 +8,6 @@ import com.televisivo.model.Role;
 import com.televisivo.model.UsuarioAuditoria;
 import com.televisivo.repository.RoleRepository;
 import com.televisivo.repository.UsuarioAuditoriaRepository;
-import com.televisivo.repository.filters.RoleFilter;
 import com.televisivo.service.RoleService;
 import com.televisivo.service.exceptions.EntidadeEmUsoException;
 import com.televisivo.service.exceptions.RoleNaoCadastradaException;
@@ -16,8 +15,6 @@ import com.televisivo.service.exceptions.RoleNaoCadastradaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,16 +69,6 @@ public class RoleServiceImpl implements RoleService {
         } catch (EmptyResultDataAccessException e) {
             throw new RoleNaoCadastradaException(String.format("A role com o código %d não foi encontrada.", id));
         }
-    }
-
-    @Override
-    public List<Role> buscarNome(String nome) {
-        return roleRepository.buscarNome(nome);
-    }
-
-    @Override
-    public Page<Role> listaComPaginacao(RoleFilter roleFilter, Pageable pageable) {
-        return roleRepository.listaComPaginacao(roleFilter, pageable);
     }
 
     @Override

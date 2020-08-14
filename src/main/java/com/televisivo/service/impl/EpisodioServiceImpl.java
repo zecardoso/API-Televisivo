@@ -58,9 +58,4 @@ public class EpisodioServiceImpl implements EpisodioService {
 			throw new EpisodioNaoCadastradoException(String.format("O episodio com o código %d não foi encontrado!", id));
 		}
     }
-    
-    @Override
-    public List<Episodio> buscarNumero(int numero) {
-        return episodioRepository.buscarNumero(numero);
-    }
 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.televisivo.model.Permissao;
 import com.televisivo.repository.PermissaoRepository;
-import com.televisivo.repository.filters.PermissaoFilter;
 import com.televisivo.service.PermissaoService;
 import com.televisivo.service.exceptions.EntidadeEmUsoException;
 import com.televisivo.service.exceptions.PermissaoNaoCadastradaException;
@@ -12,8 +11,6 @@ import com.televisivo.service.exceptions.PermissaoNaoCadastradaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,15 +57,5 @@ public class PermissaoServiceImpl implements PermissaoService {
 		} catch (EmptyResultDataAccessException e){
 			throw new PermissaoNaoCadastradaException(String.format("A permissao com o código %d não foi encontrada!", id));
 		}
-    }
-
-    @Override
-    public List<Permissao> buscarNome(String nome) {
-        return buscarNome(nome);
-    }
-
-    @Override
-    public Page<Permissao> listaComPaginacao(PermissaoFilter permissaoFilter, Pageable pageable) {
-        return permissaoRepository.listaComPaginacao(permissaoFilter, pageable);
     }
 }

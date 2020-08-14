@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.televisivo.model.Servico;
 import com.televisivo.repository.ServicoRepository;
-import com.televisivo.repository.filters.ServicoFilter;
 import com.televisivo.service.ServicoService;
 import com.televisivo.service.exceptions.EntidadeEmUsoException;
 import com.televisivo.service.exceptions.ServicoNaoCadastradoException;
@@ -12,8 +11,6 @@ import com.televisivo.service.exceptions.ServicoNaoCadastradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,15 +57,5 @@ public class ServicoServiceImpl implements ServicoService {
 		} catch (EmptyResultDataAccessException e){
 			throw new ServicoNaoCadastradoException(String.format("O serviço com o código %d não foi encontrada!", id));
 		}
-    }
-
-    @Override
-    public List<Servico> buscarNome(String nome) {
-        return servicoRepository.buscarNome(nome);
-    }
-
-    @Override
-    public Page<Servico> listaComPaginacao(ServicoFilter servicoFilter, Pageable pageable) {
-        return servicoRepository.listaComPaginacao(servicoFilter, pageable);
     }
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import com.televisivo.model.RolePermissao;
 import com.televisivo.model.RolePermissaoId;
 import com.televisivo.repository.RolePermissaoRepository;
-import com.televisivo.repository.filters.RolePermissaoFilter;
 import com.televisivo.service.RolePermissaoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,10 +49,5 @@ public class RolePermissaoServiceImpl implements RolePermissaoService {
     @Override
     public void deleteById(RolePermissaoId id) {
         rolePermissaoRepository.deleteById(id);
-    }
-
-    @Override
-    public List<RolePermissao> findRolePermissaoEscopoFilter(RolePermissaoFilter rolePermissaoFilter) {
-        return rolePermissaoRepository.findRolePermissaoEscopoFilter(rolePermissaoFilter);
     }
 }

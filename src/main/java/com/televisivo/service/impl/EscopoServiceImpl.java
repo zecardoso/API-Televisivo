@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.televisivo.model.Escopo;
 import com.televisivo.repository.EscopoRepository;
-import com.televisivo.repository.filters.EscopoFilter;
 import com.televisivo.service.EscopoService;
 import com.televisivo.service.exceptions.EntidadeEmUsoException;
 import com.televisivo.service.exceptions.EscopoNaoCadastradoException;
@@ -12,8 +11,6 @@ import com.televisivo.service.exceptions.EscopoNaoCadastradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,15 +57,5 @@ public class EscopoServiceImpl implements EscopoService {
 		} catch (EmptyResultDataAccessException e){
 			throw new EscopoNaoCadastradoException(String.format("O escopo com o código %d não foi encontrado!", id));
 		}
-    }
-    
-    @Override
-    public List<Escopo> buscarNome(String nome) {
-        return escopoRepository.buscarNome(nome);
-    }
-
-    @Override
-    public Page<Escopo> listaComPaginacao(EscopoFilter escopoFilter, Pageable pageable) {
-        return escopoRepository.listaComPaginacao(escopoFilter, pageable);
     }
 }

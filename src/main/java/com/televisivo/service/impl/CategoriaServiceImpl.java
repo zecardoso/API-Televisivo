@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.televisivo.model.Categoria;
 import com.televisivo.repository.CategoriaRepository;
-import com.televisivo.repository.filters.CategoriaFilter;
 import com.televisivo.service.CategoriaService;
 import com.televisivo.service.exceptions.CategoriaNaoCadastradaException;
 import com.televisivo.service.exceptions.EntidadeEmUsoException;
@@ -12,8 +11,6 @@ import com.televisivo.service.exceptions.EntidadeEmUsoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,15 +57,5 @@ public class CategoriaServiceImpl implements CategoriaService {
 		} catch (EmptyResultDataAccessException e){
 			throw new CategoriaNaoCadastradaException(String.format("A categoria com o código %d não foi encontrada!", id));
 		}
-    }
-    
-    @Override
-    public List<Categoria> buscarNome(String nome) {
-		return categoriaRepository.buscarNome(nome);
-    }
-
-    @Override
-    public Page<Categoria> listaComPaginacao(CategoriaFilter categoriaFilter, Pageable pageable) {
-        return categoriaRepository.listaComPaginacao(categoriaFilter, pageable);
     }
 }

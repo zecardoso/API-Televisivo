@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(callSuper = false)
 public class UsuarioSistema extends User {
 
     private static final long serialVersionUID = 6297924943836319733L;
