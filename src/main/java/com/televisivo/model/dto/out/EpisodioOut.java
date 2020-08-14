@@ -1,7 +1,5 @@
 package com.televisivo.model.dto.out;
 
-import java.util.Date;
-
 import com.televisivo.model.Temporada;
 
 import lombok.Getter;
@@ -17,6 +15,13 @@ public class EpisodioOut {
     private String enredo;
     private Float avaliacao;
     private int duracao;
-    private Date publicacao;
     private Temporada temporada;
+
+    public Long getTemporada() {
+        return temporada.getId();
+    }
+
+    public Long getSerie() {
+        return temporada.getSerie().getId();
+    }
 }

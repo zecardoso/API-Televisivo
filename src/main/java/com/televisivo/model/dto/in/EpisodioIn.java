@@ -1,7 +1,5 @@
 package com.televisivo.model.dto.in;
 
-import java.util.Date;
-
 import com.televisivo.model.Temporada;
 
 import lombok.Getter;
@@ -17,6 +15,6 @@ public class EpisodioIn {
     private String enredo;
     private Float avaliacao;
     private int duracao;
-    private Date publicacao;
+    // private Date publicacao;
     private Temporada temporada;
 }

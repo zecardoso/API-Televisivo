@@ -1,9 +1,5 @@
 package com.televisivo.model.dto.out;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.televisivo.model.Episodio;
 import com.televisivo.model.Serie;
 
 import lombok.Getter;
@@ -18,6 +14,9 @@ public class TemporadaOut {
     private int ano;
     private Float avaliacao;
     private int qtdEpisodios;
-    private List<Episodio> episodios = new ArrayList<>();
     private Serie serie;
+
+    public Long getSerie() {
+        return serie.getId();
+    }
 }

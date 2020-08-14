@@ -1,12 +1,6 @@
 package com.televisivo.model.dto.out;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.televisivo.model.Categoria;
-import com.televisivo.model.Elenco;
 import com.televisivo.model.Servico;
-import com.televisivo.model.Temporada;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,8 +16,14 @@ public class SerieOut {
     private int restricao;
     private int qtdTemporadas;
     private int qtdSeguidores;
-    private List<Temporada> temporadas = new ArrayList<>();
-    private Servico servico;
-    private List<Categoria> categorias = new ArrayList<>();
-    private List<Elenco> elencos = new ArrayList<>();
+    private Servico servicoId;
+    private Servico servicoNome;
+
+    public Long getServicoId() {
+        return servicoId.getId();
+    }
+
+    public String getServicoNome() {
+        return servicoNome.getNome();
+    }
 }
