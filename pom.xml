@@ -7,11 +7,11 @@
         <version>2.2.6.RELEASE</version>
         <relativePath/>
     </parent>
-    <groupId>com.televisivo</groupId>
-    <artifactId>televisivo</artifactId>
+    <groupId>com.apitelevisivo</groupId>
+    <artifactId>api-televisivo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>televisivo</name>
-    <description>Televisivo project for Spring Boot</description>
+    <name>api-televisivo</name>
+    <description>Api Televisivo project for Spring Boot</description>
 
     <properties>
         <java.version>11</java.version>
@@ -182,11 +182,11 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy</artifactId>
 			<version>3.0.4</version>
-		</dependency>
+		</dependency> -->
 		
 		<dependency>
 			<groupId>org.modelmapper</groupId>
