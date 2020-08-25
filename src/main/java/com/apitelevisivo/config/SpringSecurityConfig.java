@@ -1,5 +1,9 @@
 package com.apitelevisivo.config;
 
+import com.apitelevisivo.security.jwt.JwtConfigurer;
+import com.apitelevisivo.security.jwt.JwtTokenProvider;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private JwtTokenProvider tokenProvider;
+
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -26,13 +33,15 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/**").hasAnyRole("ADMINISTRADOR", "USUARIO")
             .anyRequest().authenticated();
 
-        http.httpBasic();
+        // http.httpBasic();
 
         http.sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .maximumSessions(1);
         
         http.csrf().disable();
+
+        http.apply(new JwtConfigurer(tokenProvider));
     }
 
     @Bean
