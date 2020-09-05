@@ -42,7 +42,7 @@ public class JwtTokenProvider {
         claims.put("roles", roles);
         Date hoje = new Date();
         Date dataValida = new Date(hoje.getTime() + validadeEmMilleSegundos);
-        return Jwts.builder().setClaims(claims).setIssuedAt(dataValida).setExpiration(dataValida).signWith(SignatureAlgorithm.HS256, secretKey).compact();
+        return Jwts.builder().setClaims(claims).setIssuedAt(hoje).setExpiration(dataValida).signWith(SignatureAlgorithm.HS256, secretKey).compact();
     }
 
 	public Authentication getAuthentication(String token) {
