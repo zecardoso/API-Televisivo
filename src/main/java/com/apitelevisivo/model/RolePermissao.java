@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.ToString;
 
@@ -23,6 +25,7 @@ public class RolePermissao implements Serializable {
     @EmbeddedId
     private RolePermissaoId id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "role_id", insertable = false, updatable = false)
     private Role role;

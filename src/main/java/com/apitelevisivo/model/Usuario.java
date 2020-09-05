@@ -33,6 +33,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.apitelevisivo.config.TelevisivoConfig;
 import com.apitelevisivo.model.enumerate.Genero;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -104,6 +105,7 @@ public class Usuario implements UserDetails {
     @Column(nullable = true, columnDefinition = "DATE")
     private Date lastLogin;
 
+    @JsonIgnore
     @Size(min = 1, message = "Selecione pelo menos um grupo")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "usuario_role", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
