@@ -1,11 +1,21 @@
 package com.apitelevisivo.web.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.List;
 
-import javax.validation.Valid;
+import com.apitelevisivo.model.Escopo;
+import com.apitelevisivo.model.dto.converter.ConverterEscopo;
+import com.apitelevisivo.model.dto.in.EscopoIn;
+import com.apitelevisivo.model.dto.out.EscopoOut;
+import com.apitelevisivo.service.EscopoService;
+import com.apitelevisivo.service.exceptions.EscopoNaoCadastradoException;
+import com.apitelevisivo.service.exceptions.NegocioException;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,16 +29,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.apitelevisivo.model.Escopo;
-import com.apitelevisivo.model.dto.converter.ConverterEscopo;
-import com.apitelevisivo.model.dto.out.EscopoOut;
-import com.apitelevisivo.service.EscopoService;
-import com.apitelevisivo.service.exceptions.EscopoNaoCadastradoException;
-import com.apitelevisivo.service.exceptions.NegocioException;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
+@Api(tags = "Escopo")
 @RestController
 @RequestMapping(value = "/api/escopo")
 public class EscopoRestController {
+
+    private static final String ESCOPOS = "escopos";
 
     @Autowired
     private EscopoService escopoService;
@@ -36,20 +46,33 @@ public class EscopoRestController {
     @Autowired
     private ConverterEscopo converterEscopo;
 
+    @ApiOperation("Listar escopos")
     @ResponseBody
     @GetMapping(value = "/listar")
-    public List<EscopoOut> listar() {
-        return converterEscopo.toCollectionsModel(escopoService.findAll());
+    public CollectionModel<EscopoOut> listar() {
+        List<Escopo> listaEscopo = escopoService.findAll();
+        List<EscopoOut> listaEscopoOut = converterEscopo.toCollectionsModel(listaEscopo);
+        listaEscopoOut.forEach(escopoOut -> {
+			escopoOut.add(linkTo(methodOn(EscopoRestController.class).alterar(escopoOut.getId(), new Escopo())).withSelfRel());
+		});
+        CollectionModel<EscopoOut> escopoCollectionsModel = new CollectionModel<>(listaEscopoOut);
+        escopoCollectionsModel.add(linkTo(methodOn(EscopoRestController.class).listar()).withRel(ESCOPOS));
+        return escopoCollectionsModel;
     }
 
+    @ApiOperation("Adicionar escopo")
+    @ResponseBody
     @PostMapping(value = "/adicionar")
     @ResponseStatus(HttpStatus.OK)
-    public Escopo registrar(@RequestBody @Valid Escopo escopo) {
-        return escopoService.save(escopo);
+    public EscopoOut registrar(@ApiParam(name = "Dados do Usuário", value="Representação de um usuário" ) EscopoIn in) {
+        Escopo escopo = converterEscopo.converterInToEscopo(in);
+		return converterEscopo.converterEscopoToOut(escopo);
     }
 
+    @ApiOperation("Alterar escopo por id")
+    @ResponseBody
     @PutMapping("/alterar/{id}")
-    public ResponseEntity<Escopo> alterar(@PathVariable Long id, @RequestBody Escopo escopo) {
+    public ResponseEntity<Escopo> alterar(@ApiParam(value = "ID de um Usuário", example = "1") @PathVariable Long id, @RequestBody Escopo escopo) {
         try {
             Escopo escopo2 = escopoService.findById(id);
             if (escopo2 != null) {
@@ -63,18 +86,21 @@ public class EscopoRestController {
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/remover/{id}")
-    public ResponseEntity<?> remover(@PathVariable Long id) {
-        escopoService.deleteById(id);
-        return ResponseEntity.noContent().build();
+    @ApiOperation("Buscar escopo por id")
+	@ResponseBody
+	@GetMapping("/buscar/{id}")
+	public EscopoOut buscar(@ApiParam(value = "ID de um Usuário", example = "1") @PathVariable Long id) {
+        Escopo escopo = escopoService.getOne(id);
+		EscopoOut escopoOut = converterEscopo.converterEscopoToOut(escopo);
+		escopoOut.add(linkTo(methodOn(EscopoRestController.class).buscar(escopoOut.getId())).withSelfRel());
+		escopoOut.add(linkTo(methodOn(EscopoRestController.class).listar()).withRel(ESCOPOS));
+		return escopoOut;
     }
     
-    @GetMapping(value = "/buscar/{id}")
-    public ResponseEntity<Escopo> buscar(@PathVariable Long id) {
-        Escopo escopo = escopoService.findById(id);
-        if (escopo != null) {
-            return ResponseEntity.ok(escopo);
-        }
-        return ResponseEntity.notFound().build();
+    @ApiOperation("Remover escopo por id")
+    @DeleteMapping("/remover/{id}")
+    public ResponseEntity<Escopo> remover(@PathVariable Long id) {
+        escopoService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

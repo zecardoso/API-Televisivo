@@ -2,12 +2,14 @@ package com.apitelevisivo.model.dto.out;
 
 import com.apitelevisivo.model.Temporada;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class EpisodioOut {
+public class EpisodioOut extends RepresentationModel<UsuarioOut> {
     
     private Long id;
     private int numero;
