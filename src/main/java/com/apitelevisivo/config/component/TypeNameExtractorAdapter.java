@@ -109,5 +109,4 @@ public class TypeNameExtractorAdapter extends TypeNameExtractor {
 				new DefaultTypeNameProvider());
 		return selected.nameFor(context.getType());
 	}
-
 }

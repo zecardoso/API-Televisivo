@@ -11,6 +11,6 @@ import com.apitelevisivo.model.Role;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
-    @Query("SELECT r FROM Role r LEFT JOIN r.usuarios ")
+    @Query("SELECT r FROM Role r LEFT JOIN r.usuarios")
 	List<Role> findAllRoles();
 }

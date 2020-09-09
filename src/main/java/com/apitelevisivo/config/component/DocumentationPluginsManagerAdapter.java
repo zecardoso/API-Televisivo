@@ -38,5 +38,4 @@ public class DocumentationPluginsManagerAdapter extends DocumentationPluginsMana
 		return defaultsProviders.getPluginOrDefaultFor(documentationType, defaultConfiguration).create(documentationType)
 				.withResourceGroupingStrategy(resourceGroupingStrategy(documentationType));
 	}
-
 }
