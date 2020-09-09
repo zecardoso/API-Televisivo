@@ -2,6 +2,9 @@ package com.apitelevisivo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -16,7 +19,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
-public class SpringFoxConfig implements WebMvcConfigurer {
+public class SpringWebConfig implements WebMvcConfigurer {
     
     @Bean
 	public Docket apiDocket() {
@@ -55,5 +58,22 @@ public class SpringFoxConfig implements WebMvcConfigurer {
 				.version("1")
 				// .contact(new Contact("IFSP", "http://bri.ifsp.edu.br", "contato@contato.com"))
 				.build();
+	}
+
+	@Override
+	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+		configurer.favorPathExtension(false)
+				  .favorParameter(false)
+				  .ignoreAcceptHeader(false)
+				  .useRegisteredExtensionsOnly(false)
+				  .defaultContentType(MediaType.APPLICATION_JSON)
+				  .mediaType("json", MediaType.APPLICATION_JSON)
+				  .mediaType("xml", MediaType.APPLICATION_XML);
+	}
+
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**")
+				.allowedMethods("GET", "POST", "PUT", "PATH", "DELETE", "OPTIONS", "HEAD", "CONNECT");
 	}
 }
