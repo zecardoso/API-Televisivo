@@ -1,39 +1,38 @@
 package com.apitelevisivo.model.dto.converter;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import com.apitelevisivo.model.Categoria;
+import com.apitelevisivo.model.dto.out.CategoriaOut;
+import com.apitelevisivo.web.controller.CategoriaRestController;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import com.apitelevisivo.model.Categoria;
-import com.apitelevisivo.model.dto.in.CategoriaIn;
-import com.apitelevisivo.model.dto.out.CategoriaOut;
-
 @Component
-public class ConverterCategoria {
+public class ConverterCategoria extends RepresentationModelAssemblerSupport<Categoria, CategoriaOut> {
     
     @Autowired
     private ModelMapper modelMapper;
     
-    public Categoria converterInToCategoria(CategoriaIn in) {
-        return modelMapper.map(in, Categoria.class);
+    public ConverterCategoria() {
+        super(CategoriaRestController.class, CategoriaOut.class);
     }
 
-    public CategoriaIn converterCategoriaToIn(Categoria categoria) {
-        return modelMapper.map(categoria, CategoriaIn.class);
+    @Override
+    public CollectionModel<CategoriaOut> toCollectionModel(Iterable<? extends Categoria> categorias) {
+        return super.toCollectionModel(categorias).add(linkTo(CategoriaRestController.class).withSelfRel());
     }
 
-    public Categoria converterOutToCategoria(CategoriaOut out) {
-        return modelMapper.map(out, Categoria.class);
-    }
-
-    public CategoriaOut converterCategoriaToOut(Categoria categoria) {
-        return modelMapper.map(categoria, CategoriaOut.class);
-    }
-
-    public List<CategoriaOut> toCollectionsModel(List<Categoria> categorias) {
-        return categorias.stream().map(categoria -> converterCategoriaToOut(categoria)).collect(Collectors.toList());
+    @Override
+    public CategoriaOut toModel(Categoria categoria) {
+        // CategoriaOut categoriaOut = createModelWithId(categoria.getId(), categoria)
+        CategoriaOut categoriaOut = modelMapper.map(categoria, CategoriaOut.class);
+        categoriaOut.add(linkTo(methodOn(CategoriaRestController.class).buscarAlterar(categoriaOut.getId())).withRel("categoria"));
+        return categoriaOut;
     }
 }

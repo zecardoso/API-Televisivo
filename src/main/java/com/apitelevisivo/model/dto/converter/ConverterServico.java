@@ -1,39 +1,38 @@
 package com.apitelevisivo.model.dto.converter;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import com.apitelevisivo.model.Servico;
+import com.apitelevisivo.model.dto.out.ServicoOut;
+import com.apitelevisivo.web.controller.ServicoRestController;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import com.apitelevisivo.model.Servico;
-import com.apitelevisivo.model.dto.in.ServicoIn;
-import com.apitelevisivo.model.dto.out.ServicoOut;
-
 @Component
-public class ConverterServico {
+public class ConverterServico extends RepresentationModelAssemblerSupport<Servico, ServicoOut> {
     
     @Autowired
     private ModelMapper modelMapper;
     
-    public Servico converterInToServico(ServicoIn in) {
-        return modelMapper.map(in, Servico.class);
+    public ConverterServico() {
+        super(ServicoRestController.class, ServicoOut.class);
     }
 
-    public ServicoIn converterServicoToIn(Servico servico) {
-        return modelMapper.map(servico, ServicoIn.class);
+    @Override
+    public CollectionModel<ServicoOut> toCollectionModel(Iterable<? extends Servico> servicos) {
+        return super.toCollectionModel(servicos).add(linkTo(ServicoRestController.class).withSelfRel());
     }
 
-    public Servico converterOutToServico(ServicoOut out) {
-        return modelMapper.map(out, Servico.class);
-    }
-
-    public ServicoOut converterServicoToOut(Servico servico) {
-        return modelMapper.map(servico, ServicoOut.class);
-    }
-
-    public List<ServicoOut> toCollectionsModel(List<Servico> servicos) {
-        return servicos.stream().map(servico -> converterServicoToOut(servico)).collect(Collectors.toList());
+    @Override
+    public ServicoOut toModel(Servico servico) {
+        // ServicoOut servicoOut = createModelWithId(servico.getId(), servico)
+        ServicoOut servicoOut = modelMapper.map(servico, ServicoOut.class);
+        servicoOut.add(linkTo(methodOn(ServicoRestController.class).buscarAlterar(servicoOut.getId())).withRel("servico"));
+        return servicoOut;
     }
 }

@@ -1,39 +1,38 @@
 package com.apitelevisivo.model.dto.converter;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import com.apitelevisivo.model.Permissao;
+import com.apitelevisivo.model.dto.out.PermissaoOut;
+import com.apitelevisivo.web.controller.PermissaoRestController;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import com.apitelevisivo.model.Permissao;
-import com.apitelevisivo.model.dto.in.PermissaoIn;
-import com.apitelevisivo.model.dto.out.PermissaoOut;
-
 @Component
-public class ConverterPermissao {
+public class ConverterPermissao extends RepresentationModelAssemblerSupport<Permissao, PermissaoOut> {
     
     @Autowired
     private ModelMapper modelMapper;
     
-    public Permissao converterInToPermissao(PermissaoIn in) {
-        return modelMapper.map(in, Permissao.class);
+    public ConverterPermissao() {
+        super(PermissaoRestController.class, PermissaoOut.class);
     }
 
-    public PermissaoIn converterPermissaoToIn(Permissao permissao) {
-        return modelMapper.map(permissao, PermissaoIn.class);
+    @Override
+    public CollectionModel<PermissaoOut> toCollectionModel(Iterable<? extends Permissao> permissoes) {
+        return super.toCollectionModel(permissoes).add(linkTo(PermissaoRestController.class).withSelfRel());
     }
 
-    public Permissao converterOutToPermissao(PermissaoOut out) {
-        return modelMapper.map(out, Permissao.class);
-    }
-
-    public PermissaoOut converterPermissaoToOut(Permissao permissao) {
-        return modelMapper.map(permissao, PermissaoOut.class);
-    }
-
-    public List<PermissaoOut> toCollectionsModel(List<Permissao> permissaos) {
-        return permissaos.stream().map(permissao -> converterPermissaoToOut(permissao)).collect(Collectors.toList());
+    @Override
+    public PermissaoOut toModel(Permissao permissao) {
+        // PermissaoOut permissaoOut = createModelWithId(permissao.getId(), permissao)
+        PermissaoOut permissaoOut = modelMapper.map(permissao, PermissaoOut.class);
+        permissaoOut.add(linkTo(methodOn(PermissaoRestController.class).buscarAlterar(permissaoOut.getId())).withRel("permissao"));
+        return permissaoOut;
     }
 }

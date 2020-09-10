@@ -2,17 +2,19 @@ package com.apitelevisivo.service.impl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.apitelevisivo.model.Categoria;
 import com.apitelevisivo.repository.CategoriaRepository;
 import com.apitelevisivo.service.CategoriaService;
 import com.apitelevisivo.service.exceptions.CategoriaNaoCadastradaException;
 import com.apitelevisivo.service.exceptions.EntidadeEmUsoException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -57,5 +59,15 @@ public class CategoriaServiceImpl implements CategoriaService {
 		} catch (EmptyResultDataAccessException e){
 			throw new CategoriaNaoCadastradaException(String.format("A categoria com o código %d não foi encontrada!", id));
 		}
+    }
+
+    @Override
+    public Page<Categoria> findAll(Pageable pageable) {
+        return categoriaRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Categoria> findAllByName(String nome, Pageable pageable) {
+        return categoriaRepository.findAllByName(nome, pageable);
     }
 }

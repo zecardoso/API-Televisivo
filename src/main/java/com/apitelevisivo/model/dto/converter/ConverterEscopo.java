@@ -1,39 +1,38 @@
 package com.apitelevisivo.model.dto.converter;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import com.apitelevisivo.model.Escopo;
+import com.apitelevisivo.model.dto.out.EscopoOut;
+import com.apitelevisivo.web.controller.EscopoRestController;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import com.apitelevisivo.model.Escopo;
-import com.apitelevisivo.model.dto.in.EscopoIn;
-import com.apitelevisivo.model.dto.out.EscopoOut;
-
 @Component
-public class ConverterEscopo {
+public class ConverterEscopo extends RepresentationModelAssemblerSupport<Escopo, EscopoOut> {
     
     @Autowired
     private ModelMapper modelMapper;
     
-    public Escopo converterInToEscopo(EscopoIn in) {
-        return modelMapper.map(in, Escopo.class);
+    public ConverterEscopo() {
+        super(EscopoRestController.class, EscopoOut.class);
     }
 
-    public EscopoIn converterEscopoToIn(Escopo escopo) {
-        return modelMapper.map(escopo, EscopoIn.class);
+    @Override
+    public CollectionModel<EscopoOut> toCollectionModel(Iterable<? extends Escopo> escopos) {
+        return super.toCollectionModel(escopos).add(linkTo(EscopoRestController.class).withSelfRel());
     }
 
-    public Escopo converterOutToEscopo(EscopoOut out) {
-        return modelMapper.map(out, Escopo.class);
-    }
-
-    public EscopoOut converterEscopoToOut(Escopo escopo) {
-        return modelMapper.map(escopo, EscopoOut.class);
-    }
-
-    public List<EscopoOut> toCollectionsModel(List<Escopo> escopos) {
-        return escopos.stream().map(escopo -> converterEscopoToOut(escopo)).collect(Collectors.toList());
+    @Override
+    public EscopoOut toModel(Escopo escopo) {
+        // EscopoOut escopoOut = createModelWithId(escopo.getId(), escopo)
+        EscopoOut escopoOut = modelMapper.map(escopo, EscopoOut.class);
+        escopoOut.add(linkTo(methodOn(EscopoRestController.class).buscarAlterar(escopoOut.getId())).withRel("escopo"));
+        return escopoOut;
     }
 }

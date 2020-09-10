@@ -9,5 +9,5 @@ public interface GenericService<T, I> {
 	T update(T entity);
 	T getOne(I id);
 	T findById(I id);
-    void deleteById(I id);
+	void deleteById(I id);
 }

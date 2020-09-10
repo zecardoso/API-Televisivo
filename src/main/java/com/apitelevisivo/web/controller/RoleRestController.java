@@ -3,30 +3,26 @@ package com.apitelevisivo.web.controller;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import java.util.List;
-
 import com.apitelevisivo.model.Role;
 import com.apitelevisivo.model.dto.converter.ConverterRole;
-import com.apitelevisivo.model.dto.in.RoleIn;
 import com.apitelevisivo.model.dto.out.RoleOut;
 import com.apitelevisivo.service.RoleService;
-import com.apitelevisivo.service.exceptions.NegocioException;
-import com.apitelevisivo.service.exceptions.RoleNaoCadastradaException;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -38,7 +34,8 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping(value = "/api/role")
 public class RoleRestController {
 
-    private static final String ROLES = "roles";
+    // private static final String ROLES = "roles";
+    private static final String NOME = "nome";
 
     @Autowired
     private RoleService roleService;
@@ -46,56 +43,97 @@ public class RoleRestController {
     @Autowired
     private ConverterRole converterRole;
 
+    @Autowired
+    private PagedResourcesAssembler<Role> pagedResourcesAssembler;
+
     @ApiOperation("Listar roles")
     @ResponseBody
     @GetMapping(value = "/listar")
-    public CollectionModel<RoleOut> listar() {
-        List<Role> listaRole = roleService.findAll();
-        List<RoleOut> listaRoleOut = converterRole.toCollectionsModel(listaRole);
-        listaRoleOut.forEach(roleOut -> {
-			roleOut.add(linkTo(methodOn(RoleRestController.class).alterar(roleOut.getId(), new Role())).withSelfRel());
-		});
-        CollectionModel<RoleOut> roleCollectionsModel = new CollectionModel<>(listaRoleOut);
-        roleCollectionsModel.add(linkTo(methodOn(RoleRestController.class).listar()).withRel(ROLES));
-        return roleCollectionsModel;
-    }
+    public PagedModel<RoleOut> listar(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "limit", defaultValue = "10") int limit,
+            @RequestParam(value = "dir", defaultValue = "asc") String dir) {
 
-    @ApiOperation("Adicionar role")
-    @ResponseBody
-    @PostMapping(value = "/adicionar")
-    @ResponseStatus(HttpStatus.OK)
-    public RoleOut registrar(@ApiParam(name = "Dados do Usuário", value="Representação de um usuário" ) RoleIn in) {
-        Role role = converterRole.converterInToRole(in);
-		return converterRole.converterRoleToOut(role);
-    }
+        Pageable pageable = null;
 
-    @ApiOperation("Alterar role por id")
-    @ResponseBody
-    @PutMapping("/alterar/{id}")
-    public ResponseEntity<Role> alterar(@ApiParam(value = "ID de um Usuário", example = "1") @PathVariable Long id, @RequestBody Role role) {
-        try {
-            Role role2 = roleService.findById(id);
-            if (role2 != null) {
-                BeanUtils.copyProperties(role, role2);
-                role2 = roleService.update(role2);
-                return ResponseEntity.ok(role2);
-            }
-        } catch (RoleNaoCadastradaException e) {
-            throw new NegocioException("O role não existe no sistema");
+        if (dir.equalsIgnoreCase("asc")) {
+            pageable = PageRequest.of(page, limit, Sort.by(Direction.ASC, NOME));
+        } else {
+            pageable = PageRequest.of(page, limit, Sort.by(Direction.DESC, NOME));
         }
-        return ResponseEntity.notFound().build();
+
+        Page<Role> listaRole = roleService.findAll(pageable);
+        return pagedResourcesAssembler.toModel(listaRole, converterRole);
+    }
+
+    @ApiOperation("Listar roles por nome")
+    @ResponseBody
+    @GetMapping(value = "/listar/{nome}")
+    public PagedModel<RoleOut> listarByName(
+            @PathVariable(NOME) String nome,    
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "limit", defaultValue = "10") int limit,
+            @RequestParam(value = "dir", defaultValue = "asc") String dir) {
+
+        Pageable pageable = null;
+
+        if (dir.equalsIgnoreCase("asc")) {
+            pageable = PageRequest.of(page, limit, Sort.by(Direction.ASC, NOME));
+        } else {
+            pageable = PageRequest.of(page, limit, Sort.by(Direction.DESC, NOME));
+        }
+
+        Page<Role> listaRole = roleService.findAllByName(nome, pageable);
+        return pagedResourcesAssembler.toModel(listaRole, converterRole);
     }
 
     @ApiOperation("Buscar role por id")
 	@ResponseBody
-	@GetMapping("/buscar/{id}")
-	public RoleOut buscar(@ApiParam(value = "ID de um Usuário", example = "1") @PathVariable Long id) {
-        Role role = roleService.getOne(id);
-		RoleOut roleOut = converterRole.converterRoleToOut(role);
-		roleOut.add(linkTo(methodOn(RoleRestController.class).buscar(roleOut.getId())).withSelfRel());
-		roleOut.add(linkTo(methodOn(RoleRestController.class).listar()).withRel(ROLES));
+	@GetMapping("/alterar/{id}")
+	public RoleOut buscarAlterar(@ApiParam(value = "ID de um role", example = "1") @PathVariable Long id) {
+		Role role = roleService.getOne(id);
+		RoleOut roleOut = converterRole.toModel(role);
+		roleOut.add(linkTo(methodOn(RoleRestController.class).buscarAlterar(roleOut.getId())).withSelfRel());
+		// roleOut.add(linkTo(methodOn(RoleRestController.class).listar()).withRel(USUARIOS));
 		return roleOut;
-    }
+	}
+
+    // @ApiOperation("Adicionar role")
+    // @ResponseBody
+    // @PostMapping(value = "/adicionar")
+    // @ResponseStatus(HttpStatus.OK)
+    // public RoleOut registrar(@ApiParam(name = "Dados do role", value="Representação de um usuário" ) RoleIn in) {
+    //     Role role = converterRole.converterInToRole(in);
+	// 	return converterRole.converterRoleToOut(role);
+    // }
+
+    // @ApiOperation("Alterar role por id")
+    // @ResponseBody
+    // @PutMapping("/alterar/{id}")
+    // public ResponseEntity<Role> alterar(@ApiParam(value = "ID de um role", example = "1") @PathVariable Long id, @RequestBody Role role) {
+    //     try {
+    //         Role role2 = roleService.findById(id);
+    //         if (role2 != null) {
+    //             BeanUtils.copyProperties(role, role2);
+    //             role2 = roleService.update(role2);
+    //             return ResponseEntity.ok(role2);
+    //         }
+    //     } catch (RoleNaoCadastradaException e) {
+    //         throw new NegocioException("O role não existe no sistema");
+    //     }
+    //     return ResponseEntity.notFound().build();
+    // }
+
+    // @ApiOperation("Buscar role por id")
+	// @ResponseBody
+	// @GetMapping("/buscar/{id}")
+	// public RoleOut buscar(@ApiParam(value = "ID de um role", example = "1") @PathVariable Long id) {
+    //     Role role = roleService.getOne(id);
+	// 	RoleOut roleOut = converterRole.converterRoleToOut(role);
+	// 	roleOut.add(linkTo(methodOn(RoleRestController.class).buscar(roleOut.getId())).withSelfRel());
+	// 	roleOut.add(linkTo(methodOn(RoleRestController.class).listar()).withRel(ROLES));
+	// 	return roleOut;
+    // }
     
     @ApiOperation("Remover role por id")
     @DeleteMapping("/remover/{id}")

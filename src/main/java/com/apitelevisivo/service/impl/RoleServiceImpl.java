@@ -3,12 +3,6 @@ package com.apitelevisivo.service.impl;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.apitelevisivo.config.TelevisivoConfig;
 import com.apitelevisivo.model.Role;
 import com.apitelevisivo.model.UsuarioAuditoria;
@@ -17,6 +11,14 @@ import com.apitelevisivo.repository.UsuarioAuditoriaRepository;
 import com.apitelevisivo.service.RoleService;
 import com.apitelevisivo.service.exceptions.EntidadeEmUsoException;
 import com.apitelevisivo.service.exceptions.RoleNaoCadastradaException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -86,4 +88,14 @@ public class RoleServiceImpl implements RoleService {
 		usuarioAuditoria.setRole(role);
         usuarioAuditoriaRepository.save(usuarioAuditoria); 		
 	}
+
+    @Override
+    public Page<Role> findAll(Pageable pageable) {
+        return roleRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Role> findAllByName(String nome, Pageable pageable) {
+        return roleRepository.findAllByName(nome, pageable);
+    }
 }

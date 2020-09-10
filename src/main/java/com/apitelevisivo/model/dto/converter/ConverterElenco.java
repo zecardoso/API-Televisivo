@@ -1,39 +1,38 @@
 package com.apitelevisivo.model.dto.converter;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import com.apitelevisivo.model.Elenco;
+import com.apitelevisivo.model.dto.out.ElencoOut;
+import com.apitelevisivo.web.controller.ElencoRestController;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import com.apitelevisivo.model.Elenco;
-import com.apitelevisivo.model.dto.in.ElencoIn;
-import com.apitelevisivo.model.dto.out.ElencoOut;
-
 @Component
-public class ConverterElenco {
+public class ConverterElenco extends RepresentationModelAssemblerSupport<Elenco, ElencoOut> {
     
     @Autowired
     private ModelMapper modelMapper;
     
-    public Elenco converterInToElenco(ElencoIn in) {
-        return modelMapper.map(in, Elenco.class);
+    public ConverterElenco() {
+        super(ElencoRestController.class, ElencoOut.class);
     }
 
-    public ElencoIn converterElencoToIn(Elenco elenco) {
-        return modelMapper.map(elenco, ElencoIn.class);
+    @Override
+    public CollectionModel<ElencoOut> toCollectionModel(Iterable<? extends Elenco> elencos) {
+        return super.toCollectionModel(elencos).add(linkTo(ElencoRestController.class).withSelfRel());
     }
 
-    public Elenco converterOutToElenco(ElencoOut out) {
-        return modelMapper.map(out, Elenco.class);
-    }
-
-    public ElencoOut converterElencoToOut(Elenco elenco) {
-        return modelMapper.map(elenco, ElencoOut.class);
-    }
-
-    public List<ElencoOut> toCollectionsModel(List<Elenco> elencos) {
-        return elencos.stream().map(elenco -> converterElencoToOut(elenco)).collect(Collectors.toList());
+    @Override
+    public ElencoOut toModel(Elenco elenco) {
+        // ElencoOut elencoOut = createModelWithId(elenco.getId(), elenco)
+        ElencoOut elencoOut = modelMapper.map(elenco, ElencoOut.class);
+        elencoOut.add(linkTo(methodOn(ElencoRestController.class).buscarAlterar(elencoOut.getId())).withRel("elenco"));
+        return elencoOut;
     }
 }

@@ -2,17 +2,19 @@ package com.apitelevisivo.service.impl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.apitelevisivo.model.Servico;
 import com.apitelevisivo.repository.ServicoRepository;
 import com.apitelevisivo.service.ServicoService;
 import com.apitelevisivo.service.exceptions.EntidadeEmUsoException;
 import com.apitelevisivo.service.exceptions.ServicoNaoCadastradoException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -57,5 +59,15 @@ public class ServicoServiceImpl implements ServicoService {
 		} catch (EmptyResultDataAccessException e){
 			throw new ServicoNaoCadastradoException(String.format("O serviço com o código %d não foi encontrada!", id));
 		}
+    }
+
+    @Override
+    public Page<Servico> findAll(Pageable pageable) {
+        return servicoRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Servico> findAllByName(String nome, Pageable pageable) {
+        return servicoRepository.findAllByName(nome, pageable);
     }
 }

@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,22 +30,23 @@ public class UsuarioServiceImpl implements UsuarioService {
     private PasswordEncoder passwordEncoder;
 
     private String encodePassword(String password) {
-		return passwordEncoder.encode(password);
-	}
-    
+        return passwordEncoder.encode(password);
+    }
+
     @Override
-	@Transactional(readOnly = true)
-	// @PreAuthorize("hasPermission('ADMINISTRADOR','LEITURA')")
+    @Transactional(readOnly = true)
+    // @PreAuthorize("hasPermission('ADMINISTRADOR','LEITURA')")
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
     }
 
     @Override
-	// @PreAuthorize("hasPermission('ADMINISTRADOR','INSERIR')")
+    // @PreAuthorize("hasPermission('ADMINISTRADOR','INSERIR')")
     public Usuario save(Usuario usuario) {
         Optional<Usuario> usuarioCadastrado = findUsuarioByEmail(usuario.getEmail());
-        if (usuarioCadastrado .isPresent() && !usuarioCadastrado.get().equals(usuario)) {
-            throw new EmailCadastradoException(String.format("O E-mail %s já está cadastrado no sistema ", usuario.getEmail()));
+        if (usuarioCadastrado.isPresent() && !usuarioCadastrado.get().equals(usuario)) {
+            throw new EmailCadastradoException(
+                    String.format("O E-mail %s já está cadastrado no sistema ", usuario.getEmail()));
         }
         if (!usuario.getPassword().equals(usuario.getContraSenha())) {
             throw new SenhaError("Senha incorreta.");
@@ -54,26 +57,26 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-	// @PreAuthorize("hasPermission('ADMINISTRADOR','ATUALIZAR')")
+    // @PreAuthorize("hasPermission('ADMINISTRADOR','ATUALIZAR')")
     public Usuario update(Usuario usuario) {
         return this.save(usuario);
     }
 
     @Override
-	@Transactional(readOnly = true)
-	// @PreAuthorize("hasPermission('ADMINISTRADOR','LEITURA')")
+    @Transactional(readOnly = true)
+    // @PreAuthorize("hasPermission('ADMINISTRADOR','LEITURA')")
     public Usuario getOne(Long id) {
-		return usuarioRepository.getOne(id);
+        return usuarioRepository.getOne(id);
     }
 
     @Override
-	// @PreAuthorize("hasPermission('ADMINISTRADOR','LEITURA')")
+    // @PreAuthorize("hasPermission('ADMINISTRADOR','LEITURA')")
     public Usuario findById(Long id) {
         return usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNaoCadastradoException(id));
     }
 
     @Override
-	// @PreAuthorize("hasPermission('ADMINISTRADOR','EXCLUIR')")
+    // @PreAuthorize("hasPermission('ADMINISTRADOR','EXCLUIR')")
     public void deleteById(Long id) {
         try {
             usuarioRepository.deleteById(id);
@@ -110,5 +113,15 @@ public class UsuarioServiceImpl implements UsuarioService {
     public void blockedUsuario(Usuario usuario) {
         usuario.setAtivo(Boolean.FALSE);
         usuarioRepository.save(usuario);
+    }
+
+    @Override
+    public Page<Usuario> findAll(Pageable pageable) {
+        return usuarioRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Usuario> findAllByName(String username, Pageable pageable) {
+        return usuarioRepository.findAllByName(username, pageable);
     }
 }

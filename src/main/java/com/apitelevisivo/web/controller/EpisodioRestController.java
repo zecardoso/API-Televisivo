@@ -3,30 +3,18 @@ package com.apitelevisivo.web.controller;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import java.util.List;
-
 import com.apitelevisivo.model.Episodio;
 import com.apitelevisivo.model.dto.converter.ConverterEpisodio;
-import com.apitelevisivo.model.dto.in.EpisodioIn;
 import com.apitelevisivo.model.dto.out.EpisodioOut;
 import com.apitelevisivo.service.EpisodioService;
-import com.apitelevisivo.service.exceptions.EpisodioNaoCadastradoException;
-import com.apitelevisivo.service.exceptions.NegocioException;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -38,7 +26,7 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping(value = "/api/episodio")
 public class EpisodioRestController {
 
-    private static final String EPISODIOS = "episódios";
+    // private static final String EPISODIOS = "episódios";
 
     @Autowired
     private EpisodioService episodioService;
@@ -46,56 +34,53 @@ public class EpisodioRestController {
     @Autowired
     private ConverterEpisodio converterEpisodio;
 
-    @ApiOperation("Listar episódios")
-    @ResponseBody
-    @GetMapping(value = "/listar")
-    public CollectionModel<EpisodioOut> listar() {
-        List<Episodio> listaEpisodio = episodioService.findAll();
-        List<EpisodioOut> listaEpisodioOut = converterEpisodio.toCollectionsModel(listaEpisodio);
-        listaEpisodioOut.forEach(episodioOut -> {
-			episodioOut.add(linkTo(methodOn(EpisodioRestController.class).alterar(episodioOut.getId(), new Episodio())).withSelfRel());
-		});
-        CollectionModel<EpisodioOut> episodioCollectionsModel = new CollectionModel<>(listaEpisodioOut);
-        episodioCollectionsModel.add(linkTo(methodOn(EpisodioRestController.class).listar()).withRel(EPISODIOS));
-        return episodioCollectionsModel;
-    }
-
-    @ApiOperation("Adicionar episódio")
-    @ResponseBody
-    @PostMapping(value = "/adicionar")
-    @ResponseStatus(HttpStatus.OK)
-    public EpisodioOut registrar(@ApiParam(name = "Dados do Usuário", value="Representação de um usuário" ) EpisodioIn in) {
-        Episodio episodio = converterEpisodio.converterInToEpisodio(in);
-		return converterEpisodio.converterEpisodioToOut(episodio);
-    }
-
-    @ApiOperation("Alterar episódio por id")
-    @ResponseBody
-    @PutMapping("/alterar/{id}")
-    public ResponseEntity<Episodio> alterar(@ApiParam(value = "ID de um Usuário", example = "1") @PathVariable Long id, @RequestBody Episodio episodio) {
-        try {
-            Episodio episodio2 = episodioService.findById(id);
-            if (episodio2 != null) {
-                BeanUtils.copyProperties(episodio, episodio2);
-                episodio2 = episodioService.update(episodio2);
-                return ResponseEntity.ok(episodio2);
-            }
-        } catch (EpisodioNaoCadastradoException e) {
-            throw new NegocioException("O episodio não existe no sistema");
-        }
-        return ResponseEntity.notFound().build();
-    }
-
     @ApiOperation("Buscar episódio por id")
 	@ResponseBody
-	@GetMapping("/buscar/{id}")
-	public EpisodioOut buscar(@ApiParam(value = "ID de um Usuário", example = "1") @PathVariable Long id) {
-        Episodio episodio = episodioService.getOne(id);
-		EpisodioOut episodioOut = converterEpisodio.converterEpisodioToOut(episodio);
-		episodioOut.add(linkTo(methodOn(EpisodioRestController.class).buscar(episodioOut.getId())).withSelfRel());
-		episodioOut.add(linkTo(methodOn(EpisodioRestController.class).listar()).withRel(EPISODIOS));
+	@GetMapping("/alterar/{id}")
+	public EpisodioOut buscarAlterar(@ApiParam(value = "ID de um episódio", example = "1") @PathVariable Long id) {
+		Episodio episodio = episodioService.getOne(id);
+		EpisodioOut episodioOut = converterEpisodio.toModel(episodio);
+		episodioOut.add(linkTo(methodOn(EpisodioRestController.class).buscarAlterar(episodioOut.getId())).withSelfRel());
+		// episodioOut.add(linkTo(methodOn(EpisodioRestController.class).listar()).withRel(USUARIOS));
 		return episodioOut;
-    }
+	}
+
+    // @ApiOperation("Adicionar episódio")
+    // @ResponseBody
+    // @PostMapping(value = "/adicionar")
+    // @ResponseStatus(HttpStatus.OK)
+    // public EpisodioOut registrar(@ApiParam(name = "Dados do episódio", value="Representação de um usuário" ) EpisodioIn in) {
+    //     Episodio episodio = converterEpisodio.converterInToEpisodio(in);
+	// 	return converterEpisodio.converterEpisodioToOut(episodio);
+    // }
+
+    // @ApiOperation("Alterar episódio por id")
+    // @ResponseBody
+    // @PutMapping("/alterar/{id}")
+    // public ResponseEntity<Episodio> alterar(@ApiParam(value = "ID de um episódio", example = "1") @PathVariable Long id, @RequestBody Episodio episodio) {
+    //     try {
+    //         Episodio episodio2 = episodioService.findById(id);
+    //         if (episodio2 != null) {
+    //             BeanUtils.copyProperties(episodio, episodio2);
+    //             episodio2 = episodioService.update(episodio2);
+    //             return ResponseEntity.ok(episodio2);
+    //         }
+    //     } catch (EpisodioNaoCadastradoException e) {
+    //         throw new NegocioException("O episodio não existe no sistema");
+    //     }
+    //     return ResponseEntity.notFound().build();
+    // }
+
+    // @ApiOperation("Buscar episódio por id")
+	// @ResponseBody
+	// @GetMapping("/buscar/{id}")
+	// public EpisodioOut buscar(@ApiParam(value = "ID de um episódio", example = "1") @PathVariable Long id) {
+    //     Episodio episodio = episodioService.getOne(id);
+	// 	EpisodioOut episodioOut = converterEpisodio.converterEpisodioToOut(episodio);
+	// 	episodioOut.add(linkTo(methodOn(EpisodioRestController.class).buscar(episodioOut.getId())).withSelfRel());
+	// 	episodioOut.add(linkTo(methodOn(EpisodioRestController.class).listar()).withRel(EPISODIOS));
+	// 	return episodioOut;
+    // }
     
     @ApiOperation("Remover episódio por id")
     @DeleteMapping("/remover/{id}")

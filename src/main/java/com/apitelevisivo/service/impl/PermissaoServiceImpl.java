@@ -2,17 +2,19 @@ package com.apitelevisivo.service.impl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.apitelevisivo.model.Permissao;
 import com.apitelevisivo.repository.PermissaoRepository;
 import com.apitelevisivo.service.PermissaoService;
 import com.apitelevisivo.service.exceptions.EntidadeEmUsoException;
 import com.apitelevisivo.service.exceptions.PermissaoNaoCadastradaException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -57,5 +59,15 @@ public class PermissaoServiceImpl implements PermissaoService {
 		} catch (EmptyResultDataAccessException e){
 			throw new PermissaoNaoCadastradaException(String.format("A permissao com o código %d não foi encontrada!", id));
 		}
+    }
+
+    @Override
+    public Page<Permissao> findAll(Pageable pageable) {
+        return permissaoRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Permissao> findAllByName(String nome, Pageable pageable) {
+        return permissaoRepository.findAllByName(nome, pageable);
     }
 }

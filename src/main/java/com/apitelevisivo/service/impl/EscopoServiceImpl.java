@@ -2,17 +2,19 @@ package com.apitelevisivo.service.impl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.apitelevisivo.model.Escopo;
 import com.apitelevisivo.repository.EscopoRepository;
 import com.apitelevisivo.service.EscopoService;
 import com.apitelevisivo.service.exceptions.EntidadeEmUsoException;
 import com.apitelevisivo.service.exceptions.EscopoNaoCadastradoException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -57,5 +59,15 @@ public class EscopoServiceImpl implements EscopoService {
 		} catch (EmptyResultDataAccessException e){
 			throw new EscopoNaoCadastradoException(String.format("O escopo com o código %d não foi encontrado!", id));
 		}
+    }
+
+    @Override
+    public Page<Escopo> findAll(Pageable pageable) {
+        return escopoRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Escopo> findAllByName(String nome, Pageable pageable) {
+        return escopoRepository.findAllByName(nome, pageable);
     }
 }
