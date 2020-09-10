@@ -62,8 +62,7 @@ public class SpringWebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-		configurer.favorPathExtension(false)
-				  .favorParameter(false)
+		configurer.favorParameter(false)
 				  .ignoreAcceptHeader(false)
 				  .useRegisteredExtensionsOnly(false)
 				  .defaultContentType(MediaType.APPLICATION_JSON)
