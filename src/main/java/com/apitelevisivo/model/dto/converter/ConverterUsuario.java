@@ -32,7 +32,7 @@ public class ConverterUsuario extends RepresentationModelAssemblerSupport<Usuari
     public UsuarioOut toModel(Usuario usuario) {
         // UsuarioOut usuarioOut = createModelWithId(usuario.getId(), usuario)
         UsuarioOut usuarioOut = modelMapper.map(usuario, UsuarioOut.class);
-        usuarioOut.add(linkTo(methodOn(UsuarioRestController.class).buscarAlterar(usuarioOut.getId())).withRel("usuario"));
+        usuarioOut.add(linkTo(methodOn(UsuarioRestController.class).buscar(usuarioOut.getId())).withRel("usuario"));
         return usuarioOut;
     }
 }

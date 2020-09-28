@@ -33,6 +33,7 @@ public class SpringWebConfig implements WebMvcConfigurer {
 													  .tags(new Tag("Elenco", "Gerenciar elenco"))
 													  .tags(new Tag("Episodio", "Gerenciar Episódio"))
 													  .tags(new Tag("Escopo", "Gerenciar escopo"))
+													  .tags(new Tag("Arquivo", "Arquivo"))
 													  .tags(new Tag("Login", "Login"))
 													  .tags(new Tag("Permissão", "Gerenciar permissão"))
 													  .tags(new Tag("Role", "Gerenciar role"))
@@ -73,6 +74,6 @@ public class SpringWebConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
-				.allowedMethods("GET", "POST", "PUT", "PATH", "DELETE", "OPTIONS", "HEAD", "CONNECT");
+				.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT");
 	}
 }

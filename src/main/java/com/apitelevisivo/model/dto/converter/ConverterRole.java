@@ -30,9 +30,8 @@ public class ConverterRole extends RepresentationModelAssemblerSupport<Role, Rol
 
     @Override
     public RoleOut toModel(Role role) {
-        // RoleOut roleOut = createModelWithId(role.getId(), role)
         RoleOut roleOut = modelMapper.map(role, RoleOut.class);
-        roleOut.add(linkTo(methodOn(RoleRestController.class).buscarAlterar(roleOut.getId())).withRel("role"));
+        roleOut.add(linkTo(methodOn(RoleRestController.class).buscar(roleOut.getId())).withRel("role"));
         return roleOut;
     }
 }

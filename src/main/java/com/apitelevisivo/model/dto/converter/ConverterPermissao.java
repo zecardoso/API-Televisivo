@@ -32,7 +32,7 @@ public class ConverterPermissao extends RepresentationModelAssemblerSupport<Perm
     public PermissaoOut toModel(Permissao permissao) {
         // PermissaoOut permissaoOut = createModelWithId(permissao.getId(), permissao)
         PermissaoOut permissaoOut = modelMapper.map(permissao, PermissaoOut.class);
-        permissaoOut.add(linkTo(methodOn(PermissaoRestController.class).buscarAlterar(permissaoOut.getId())).withRel("permissao"));
+        permissaoOut.add(linkTo(methodOn(PermissaoRestController.class).buscar(permissaoOut.getId())).withRel("permissao"));
         return permissaoOut;
     }
 }
